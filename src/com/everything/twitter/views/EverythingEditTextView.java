@@ -27,6 +27,8 @@ public class EverythingEditTextView extends RelativeLayout {
 
 	private Handler mHandler;
 
+	private boolean isReactToTextChange = true;
+
 	public EverythingEditTextView(Context context) {
 		super(context);
 		init(null, 0);
@@ -47,11 +49,10 @@ public class EverythingEditTextView extends RelativeLayout {
 		return mProgressBar;
 	}
 
-	public void setHandler(Handler handler)
-	{
+	public void setHandler(Handler handler) {
 		mHandler = handler;
 	}
-	
+
 	private void init(AttributeSet attrs, int defStyle) {
 		mTextChangedEvent = new TextChangedEvent(null);
 		LayoutInflater inflater = (LayoutInflater) getContext()
@@ -70,7 +71,8 @@ public class EverythingEditTextView extends RelativeLayout {
 
 		mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 		mProgressBar.setIndeterminate(true);
-		mProgressBar.setIndeterminateDrawable(getResources().getDrawable(R.anim.new_prog));
+		mProgressBar.setIndeterminateDrawable(getResources().getDrawable(
+				R.anim.new_prog));
 
 		TextWatcher textWatcher = new TextWatcher() {
 
@@ -84,26 +86,32 @@ public class EverythingEditTextView extends RelativeLayout {
 					int after) {
 			}
 
-			   final Runnable fireText = new Runnable() {
-			        @Override
-			        public void run() {
-			        	CommonApplication.getInstance().fireEvent(mTextChangedEvent);
-			        }
-			    };
-			
+			final Runnable fireText = new Runnable() {
+				@Override
+				public void run() {
+					CommonApplication.getInstance()
+							.fireEvent(mTextChangedEvent);
+				}
+			};
+
 			@Override
 			public void afterTextChanged(Editable editable) {
+				if (isReactToTextChange == false) {
+					isReactToTextChange = true;
+					return;
+				}
+
 				mHandler.removeCallbacks(fireText);
+
 				String text = mEditText.getText().toString().trim();
 				mTextChangedEvent.setNewText(text);
-				
+
 				if (mTextChangedEvent.getNewTextSize() == 0) {
 					hideProgressBar();
 				} else {
 					showProgressBar();
 				}
-				
-				
+
 				mHandler.postDelayed(fireText, Consts.DELAY_IN_MILLIS);
 			}
 
@@ -142,5 +150,10 @@ public class EverythingEditTextView extends RelativeLayout {
 
 	public void hideProgressBar() {
 		getProgressBarView().setVisibility(View.INVISIBLE);
+	}
+
+	public void setIsReactToTextChange(boolean isReactToTextChange) {
+		this.isReactToTextChange = isReactToTextChange;
+
 	}
 }

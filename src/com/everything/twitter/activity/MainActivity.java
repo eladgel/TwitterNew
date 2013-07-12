@@ -11,6 +11,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -31,6 +32,10 @@ import com.everything.twitter.simple.Mngr;
 import com.everything.twitter.views.EverythingEditTextView;
 
 public class MainActivity extends RoboActivity {
+	ILogic twitterLogic = null;
+	// List<Status> items;
+
+	TwitterAdapter adapter;
 
 	@InjectView(tag = "searchBar")
 	EverythingEditTextView et;
@@ -38,30 +43,35 @@ public class MainActivity extends RoboActivity {
 	@InjectView(tag = "tweetList")
 	ListView list;
 
-	TwitterAdapter adapter;
-	List<Status> items = new ArrayList<Status>();
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		Mngr mngr = Mngr.getInstance();
+		if (mngr.getItems() == null) {
+			mngr.setItems(new ArrayList<Status>());
+		}
+		if (mngr.getTwitter() == null) {
+			ConfigurationBuilder cb = new ConfigurationBuilder();
+			cb.setDebugEnabled(true)
+					.setOAuthConsumerKey("8v7aZg4PMQ66TbS6ghYjFw")
+					.setOAuthConsumerSecret(
+							"RBAc4pq2VUmNyw4RQ6foVyoUedMEPWk7kAPv0iQ")
+					.setOAuthAccessToken(
+							"45514224-o9XiTql4jv2SBovq2lYRJcogHTTmNpwSkpZRVf0Xt")
+					.setOAuthAccessTokenSecret(
+							"UHx9nMAM3EtWGKEu0OPrYKLAPwKHjOG8tH1rAn08");
+			TwitterFactory tf = new TwitterFactory(cb.build());
+			Twitter twitter = tf.getInstance();
+			mngr.setTwitter(twitter);
+		}
+		if (CommonApplication.getInstance().getEventManager() == null) {
+			CommonApplication.getInstance().setEventManager(eventManager);
+		}
 
-		ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setDebugEnabled(true)
-				.setOAuthConsumerKey("8v7aZg4PMQ66TbS6ghYjFw")
-				.setOAuthConsumerSecret(
-						"RBAc4pq2VUmNyw4RQ6foVyoUedMEPWk7kAPv0iQ")
-				.setOAuthAccessToken(
-						"45514224-o9XiTql4jv2SBovq2lYRJcogHTTmNpwSkpZRVf0Xt")
-				.setOAuthAccessTokenSecret(
-						"UHx9nMAM3EtWGKEu0OPrYKLAPwKHjOG8tH1rAn08");
-		TwitterFactory tf = new TwitterFactory(cb.build());
-		Twitter twitter = tf.getInstance();
-		Mngr.getInstance().setTwitter(twitter);
-
-		CommonApplication.getInstance().setEventManager(eventManager);
 		et.setHandler(new Handler(Looper.getMainLooper()));
-		adapter = new TwitterAdapter(getBaseContext(), items);
+
+		adapter = new TwitterAdapter(getBaseContext(), mngr.getItems());
 		list.setAdapter(adapter);
 		list.setOnScrollListener(new OnScrollListener() {
 
@@ -97,17 +107,16 @@ public class MainActivity extends RoboActivity {
 		return true;
 	}
 
-	ILogic twitter = null;
-
 	protected void onTextchanged(@Observes TextChangedEvent textChanged) {
-		if (twitter == null) {
-			twitter = new TwitterLogic();
+		if (twitterLogic == null) {
+			twitterLogic = new TwitterLogic();
 		}
-		twitter.query(textChanged.getNewText());
+		twitterLogic.query(textChanged.getNewText());
 	}
 
 	protected void onResultsReceived(
 			@Observes ResultsReceivedEvent<Status> result) {
+		List<Status> items = Mngr.getInstance().getItems();
 		items.clear();
 		if (result.getItems() != null) {
 			for (Status status : result.getItems()) {
@@ -116,5 +125,11 @@ public class MainActivity extends RoboActivity {
 		}
 		adapter.notifyDataSetChanged();
 		et.hideProgressBar();
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		et.setIsReactToTextChange(false);
 	}
 }

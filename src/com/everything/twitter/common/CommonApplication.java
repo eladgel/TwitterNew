@@ -25,6 +25,10 @@ public class CommonApplication {
 	}
 
 
+	public EventManager getEventManager() {
+		return eventManager;
+	}
+
 	public void fireEvent(Object event) {
 		final Object fired = event;
 		new Runnable() {
