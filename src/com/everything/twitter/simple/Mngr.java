@@ -48,5 +48,5 @@ public class Mngr {
 	public void setItems(List<Status> mItems) {
 		this.mItems = mItems;
 	}
-
+	
 }

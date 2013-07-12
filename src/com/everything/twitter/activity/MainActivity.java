@@ -26,13 +26,12 @@ import com.everything.twitter.adapter.TwitterAdapter;
 import com.everything.twitter.common.CommonApplication;
 import com.everything.twitter.events.ResultsReceivedEvent;
 import com.everything.twitter.events.TextChangedEvent;
-import com.everything.twitter.interfaces.ILogic;
 import com.everything.twitter.logic.TwitterLogic.TwitterLogic;
 import com.everything.twitter.simple.Mngr;
 import com.everything.twitter.views.EverythingEditTextView;
 
 public class MainActivity extends RoboActivity {
-	ILogic twitterLogic = null;
+	TwitterLogic twitterLogic = null;
 	// List<Status> items;
 
 	TwitterAdapter adapter;
@@ -41,7 +40,7 @@ public class MainActivity extends RoboActivity {
 	EverythingEditTextView et;
 
 	@InjectView(tag = "tweetList")
-	ListView list;
+	ListView listView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,20 +71,29 @@ public class MainActivity extends RoboActivity {
 		et.setHandler(new Handler(Looper.getMainLooper()));
 
 		adapter = new TwitterAdapter(getBaseContext(), mngr.getItems());
-		list.setAdapter(adapter);
-		list.setOnScrollListener(new OnScrollListener() {
+		listView.setAdapter(adapter);
+		listView.setOnScrollListener(new OnScrollListener() {
+
+			// private int currentPage;
 
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				switch (scrollState) {
 				case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
 				case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-					list.requestFocus();
+					listView.requestFocus();
 					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(getCurrentFocus()
 							.getWindowToken(), 0);
 					break;
-
+				case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
+					if (listView.getLastVisiblePosition() >= listView
+							.getCount() - 3) {
+						if (twitterLogic.getLastResult().hasNext()) {
+							et.showProgressBar();
+							twitterLogic.getNextPage();
+						}
+					}
 				default:
 					break;
 				}
@@ -95,7 +103,15 @@ public class MainActivity extends RoboActivity {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-
+//				boolean loadMore = /* maybe add a padding */
+//				firstVisibleItem + visibleItemCount >= totalItemCount;
+//
+//				if (loadMore && totalItemCount != 0) {
+//					if (twitterLogic.getLastResult().hasNext()) {
+//						et.showProgressBar();
+//						twitterLogic.getNextPage();
+//					}
+//				}
 			}
 		});
 	}
@@ -114,14 +130,17 @@ public class MainActivity extends RoboActivity {
 		twitterLogic.query(textChanged.getNewText());
 	}
 
-	protected void onResultsReceived(
-			@Observes ResultsReceivedEvent<Status> result) {
+	protected void onResultsReceived(@Observes ResultsReceivedEvent result) {
 		List<Status> items = Mngr.getInstance().getItems();
-		items.clear();
-		if (result.getItems() != null) {
-			for (Status status : result.getItems()) {
+		if (twitterLogic.isLoadingMore() == false) {
+			items.clear();
+		}
+		if (result.getItem() != null) {
+
+			for (Status status : result.getItem().getTweets()) {
 				items.add(status);
 			}
+			twitterLogic.setLastResult(result.getItem());
 		}
 		adapter.notifyDataSetChanged();
 		et.hideProgressBar();

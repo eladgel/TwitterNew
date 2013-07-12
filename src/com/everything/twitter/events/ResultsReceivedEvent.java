@@ -1,23 +1,23 @@
 package com.everything.twitter.events;
 
-import java.util.List;
-//import com.base.fufinder.enums.ItemSearchType;
+import twitter4j.QueryResult;
+//import com.base.fufinder.enums.itemearchType;
 
-public class ResultsReceivedEvent<T> {
+public class ResultsReceivedEvent{
 
-	List<T> mItems;
+	QueryResult mItem;
 
 
-	public ResultsReceivedEvent(List<T> items) {
-		setItems(items);
+	public ResultsReceivedEvent(QueryResult item) {
+		setItem(item);
 	}
 
-	public List<T> getItems() {
-		return mItems;
+	public QueryResult getItem() {
+		return mItem;
 	}
 
-	public void setItems(List<T> items) {
-		mItems = items;
+	public void setItem(QueryResult item) {
+		mItem = item;
 	}
 
 
