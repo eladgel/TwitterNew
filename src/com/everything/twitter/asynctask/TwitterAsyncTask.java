@@ -6,17 +6,16 @@ import android.os.AsyncTask;
 
 import com.everything.twitter.common.CommonApplication;
 import com.everything.twitter.events.ResultsReceivedEvent;
-import com.everything.twitter.web.client.TwitterCommunicator;
+import com.everything.twitter.web.TwitterCommunicator;
 
 public class TwitterAsyncTask extends AsyncTask<Query, Void, QueryResult> {
-	public boolean ready = false;
 
 	public TwitterAsyncTask() {
 	}
 
 	@Override
 	protected QueryResult doInBackground(Query... params) {
-		
+
 		QueryResult retVal = TwitterCommunicator.getData(params[0]);
 
 		return retVal;
@@ -25,6 +24,7 @@ public class TwitterAsyncTask extends AsyncTask<Query, Void, QueryResult> {
 	@Override
 	protected void onPostExecute(QueryResult result) {
 		ResultsReceivedEvent event = new ResultsReceivedEvent(result);
+
 		CommonApplication.getInstance().fireEvent(event);
 	}
 }

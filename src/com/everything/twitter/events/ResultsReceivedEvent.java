@@ -1,7 +1,6 @@
 package com.everything.twitter.events;
 
 import twitter4j.QueryResult;
-//import com.base.fufinder.enums.itemearchType;
 
 public class ResultsReceivedEvent{
 
