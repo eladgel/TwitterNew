@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/searchItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@null"
+    android:paddingBottom="7dp" >
+
+   
+
+    <ImageView
+        android:id="@+id/twitter_image_profile"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_twitter_contact" />
+
+    <TextView
+        android:id="@+id/twitter_text_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@id/twitter_image_profile"
+        android:gravity="left"
+        android:singleLine="true"
+        android:text="elad gelman"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:textSize="18sp"
+         />
+    
+    <TextView
+        android:id="@+id/twitter_text_twitterId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/twitter_text_name"
+        android:layout_below="@+id/twitter_text_name"
+        android:layout_marginTop="-3dp"
+        android:gravity="right"
+        android:singleLine="true"
+        android:text="it was in"
+        android:textColor="@android:color/black"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/twitter_text_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/twitter_image_profile"
+        android:layout_marginRight="8dp"
+        android:paddingLeft="4dp"
+        android:ellipsize="marquee"
+        android:fadingEdge="horizontal"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="top"
+        android:scrollHorizontally="true"
+        android:text="the quick brown fox jumped over the fence"
+        android:textColor="@android:color/black"
+        android:textSize="22sp" />
+    
+    <ImageView
+        android:id="@+id/twitter_image_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_twitter_bird" />
+
+    <TextView
+        android:id="@+id/twitter_text_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/twitter_text_result"
+        android:layout_alignParentLeft="true"
+        android:gravity="right"
+        android:singleLine="true"
+        android:paddingLeft="4dp"
+        android:text="it was in"
+        android:textColor="@android:color/black"
+        android:textSize="12sp" />
+
+</RelativeLayout>
