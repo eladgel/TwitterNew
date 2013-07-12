@@ -1,4 +1,4 @@
-package com.everything.twitter.web.client;
+package com.everything.twitter.web;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -13,18 +13,12 @@ public class TwitterCommunicator {
 
 	public static QueryResult getData(Query query) {
 		QueryResult retVal = null;
-		Twitter twitter = Mngr.getInstance().getTwitter();// TwitterFactory.getSingleton();
-
-		// QueryResult result;
-
+		Twitter twitter = Mngr.getInstance().getTwitter();
 		try {
-			// Log.d(TAG, queryString);
 			retVal = twitter.search(query);
-			// retVal = result.getTweets();
 		} catch (TwitterException e) {
 			e.printStackTrace();
 		}
-		// }
 
 		return retVal;
 	}
