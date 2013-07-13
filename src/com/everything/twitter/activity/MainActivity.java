@@ -5,6 +5,7 @@ import java.util.List;
 import roboguice.activity.RoboActivity;
 import roboguice.event.Observes;
 import roboguice.inject.InjectView;
+import twitter4j.QueryResult;
 import twitter4j.Status;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -102,7 +103,13 @@ public class MainActivity extends RoboActivity {
 	}
 
 	protected void onResultsReceived(@Observes ResultsReceivedEvent result) {
+		if(twitterLogic.isQueryResultValid(result.getItem()) == false)
+		{
+			return;
+		}
+		
 		List<Status> items = Model.getInstance().getItems();
+		
 		if (twitterLogic.isLoadingMore() == false) {
 			items.clear();
 		}
