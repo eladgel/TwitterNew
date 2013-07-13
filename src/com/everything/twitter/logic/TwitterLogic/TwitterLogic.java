@@ -13,14 +13,11 @@ import com.everything.twitter.interfaces.ILogic;
 public class TwitterLogic implements ILogic {
 	private boolean isLoadingMore;
 	private QueryResult lastResult;
-	private String lastQuery;
 	private TwitterAsyncTask currTask;
 
 	@Override
 	public void query(String queryString) {
 		setLoadingMore(false);
-		lastQuery = queryString;
-		
 		if (currTask != null
 				&& currTask.getStatus().equals(AsyncTask.Status.FINISHED) == false) {
 			currTask.cancel(true);
@@ -56,16 +53,6 @@ public class TwitterLogic implements ILogic {
 
 	public void setLoadingMore(boolean isLoadingMore) {
 		this.isLoadingMore = isLoadingMore;
-	}
-
-	public boolean isQueryResultValid(QueryResult item) {
-		boolean retVal = false;
-		if(lastQuery != null && lastQuery.equals(item.getQuery()))
-		{
-			retVal = true;
-		}
-		
-		return retVal;
 	}
 
 }

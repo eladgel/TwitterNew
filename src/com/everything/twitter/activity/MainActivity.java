@@ -91,8 +91,7 @@ public class MainActivity extends RoboActivity {
 	protected void onTextchanged(@Observes TextChangedEvent textChanged) {
 		if (textChanged.getNewText().equals(Consts.EMPTY_STRING) == true) {
 			Model.getInstance().getItems().clear();
-			adapter.notifyDataSetChanged();
-			et.hideProgressBar();
+			resultsUpdated();
 		} else {
 			if (twitterLogic == null) {
 				twitterLogic = new TwitterLogic();
@@ -102,7 +101,7 @@ public class MainActivity extends RoboActivity {
 	}
 
 	protected void onResultsReceived(@Observes ResultsReceivedEvent result) {
-		if(twitterLogic.isQueryResultValid(result.getItem()) == false)
+		if(et.getText().toString().equals(result.getItem().getQuery()) == false)
 		{
 			return;
 		}
@@ -119,8 +118,20 @@ public class MainActivity extends RoboActivity {
 			}
 			twitterLogic.setLastResult(result.getItem());
 		}
-		adapter.notifyDataSetChanged();
-		et.hideProgressBar();
+		resultsUpdated();
+		
+	}
+	
+	private void resultsUpdated()
+	{
+		runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				adapter.notifyDataSetChanged();
+				et.hideProgressBar();
+			}
+		});
 	}
 
 	@Override
