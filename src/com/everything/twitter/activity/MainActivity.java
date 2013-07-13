@@ -22,7 +22,7 @@ import com.everything.twitter.common.Consts;
 import com.everything.twitter.events.ResultsReceivedEvent;
 import com.everything.twitter.events.TextChangedEvent;
 import com.everything.twitter.logic.TwitterLogic.TwitterLogic;
-import com.everything.twitter.simple.Mngr;
+import com.everything.twitter.simple.Model;
 import com.everything.twitter.views.EverythingEditTextView;
 
 public class MainActivity extends RoboActivity {
@@ -39,7 +39,7 @@ public class MainActivity extends RoboActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Mngr mngr = Mngr.getInstance();
+		Model mngr = Model.getInstance();
 
 		if (CommonApplication.getInstance().getEventManager() == null) {
 			CommonApplication.getInstance().setEventManager(eventManager);
@@ -90,7 +90,7 @@ public class MainActivity extends RoboActivity {
 
 	protected void onTextchanged(@Observes TextChangedEvent textChanged) {
 		if (textChanged.getNewText().equals(Consts.EMPTY_STRING) == true) {
-			Mngr.getInstance().getItems().clear();
+			Model.getInstance().getItems().clear();
 			adapter.notifyDataSetChanged();
 			et.hideProgressBar();
 		} else {
@@ -102,7 +102,7 @@ public class MainActivity extends RoboActivity {
 	}
 
 	protected void onResultsReceived(@Observes ResultsReceivedEvent result) {
-		List<Status> items = Mngr.getInstance().getItems();
+		List<Status> items = Model.getInstance().getItems();
 		if (twitterLogic.isLoadingMore() == false) {
 			items.clear();
 		}
