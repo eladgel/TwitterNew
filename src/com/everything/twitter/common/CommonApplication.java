@@ -30,7 +30,7 @@ public class CommonApplication {
 	}
 
 	public void fireEvent(final Object event) {
-		new Runnable() {
+		new Thread() {
 
 			@Override
 			public void run() {
@@ -38,7 +38,7 @@ public class CommonApplication {
 					eventManager.fire(event);
 
 			}
-		}.run();
+		}.start();
 
 	}
 }
