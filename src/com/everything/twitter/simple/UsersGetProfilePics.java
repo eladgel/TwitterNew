@@ -28,7 +28,7 @@ import android.widget.BaseAdapter;
  */
 public class UsersGetProfilePics {
 
-	Hashtable<String, Bitmap> friendsImages;
+	Hashtable<String, Bitmap> usersImages;
 	Hashtable<String, String> positionRequested;
 	BaseAdapter listener;
 	int runningCount = 0;
@@ -40,7 +40,7 @@ public class UsersGetProfilePics {
 	final static int MAX_ALLOWED_TASKS = 15;
 
 	public UsersGetProfilePics() {
-		friendsImages = new Hashtable<String, Bitmap>();
+		usersImages = new Hashtable<String, Bitmap>();
 		positionRequested = new Hashtable<String, String>();
 		queue = new Stack<ItemPair>();
 	}
@@ -60,31 +60,8 @@ public class UsersGetProfilePics {
 		queue.clear();
 	}
 
-	// /*
-	// * If the profile picture has already been downloaded and cached, return
-	// it
-	// * else execute a new async task to fetch it - if total async tasks >15,
-	// * queue the request.
-	// */
-	// public Bitmap getImage(String uid, String url) {
-	// Bitmap image = friendsImages.get(uid);
-	// if (image != null) {
-	// return image;
-	// }
-	// if (!positionRequested.containsKey(uid)) {
-	// positionRequested.put(uid, "");
-	// if (runningCount >= MAX_ALLOWED_TASKS) {
-	// queue.push(new ItemPair(uid, url));
-	// } else {
-	// runningCount++;
-	// new GetProfilePicAsyncTask().execute(uid, url);
-	// }
-	// }
-	// return null;
-	// }
-
 	public Bitmap getImage(String uid, String url) {
-		Bitmap image = friendsImages.get(uid);
+		Bitmap image = usersImages.get(uid);
 		if (image != null) {
 			return image;
 		}
@@ -125,7 +102,7 @@ public class UsersGetProfilePics {
 		protected void onPostExecute(Bitmap result) {
 			runningCount--;
 			if (result != null) {
-				friendsImages.put(uid, result);
+				usersImages.put(uid, result);
 				listener.notifyDataSetChanged();
 				getNextImage();
 			}

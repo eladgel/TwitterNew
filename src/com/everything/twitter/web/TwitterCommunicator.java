@@ -9,8 +9,6 @@ import com.everything.twitter.simple.Model;
 
 public class TwitterCommunicator {
 
-	private static final String TAG = "TwitterCommunicator";
-
 	public static QueryResult getData(Query query) {
 		QueryResult retVal = null;
 		Twitter twitter = Model.getInstance().getTwitter();

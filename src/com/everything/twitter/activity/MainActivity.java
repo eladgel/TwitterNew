@@ -5,7 +5,6 @@ import java.util.List;
 import roboguice.activity.RoboActivity;
 import roboguice.event.Observes;
 import roboguice.inject.InjectView;
-import twitter4j.QueryResult;
 import twitter4j.Status;
 import android.content.Context;
 import android.content.res.Configuration;

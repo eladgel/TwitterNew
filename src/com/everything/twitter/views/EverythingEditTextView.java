@@ -64,11 +64,6 @@ public class EverythingEditTextView extends RelativeLayout {
 		}
 
 		mEditText = (EditText) findViewById(R.id.searchText);
-		// TBD E.G comment out when you want to change keyboard settings
-		// et.setInputType(et.getInputType()
-		// | EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-		// | EditorInfo.TYPE_TEXT_VARIATION_FILTER);
-
 		mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 		mProgressBar.setIndeterminate(true);
 		mProgressBar.setIndeterminateDrawable(getResources().getDrawable(
