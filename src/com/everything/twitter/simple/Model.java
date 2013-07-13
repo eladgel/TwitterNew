@@ -11,29 +11,27 @@ import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
-public class Mngr {
+public class Model {
 
 	public static final String TAG = "Mngr";
 
-	public final static int SPEECH_REQUEST_CODE = 1234;
-
 	private Twitter twitter;
 
-	private static Mngr mInstance;
+	private static Model mInstance;
 
 	private List<Status> mItems;
 
 	private Handler mHandler;
 
-	private Mngr() {
+	private Model() {
 		super();
 	}
 
-	public static Mngr getInstance() {
+	public static Model getInstance() {
 		if (mInstance == null) {
-			synchronized (Mngr.class) {
+			synchronized (Model.class) {
 				if (mInstance == null) {
-					mInstance = new Mngr();
+					mInstance = new Model();
 				}
 			}
 		}
@@ -76,9 +74,5 @@ public class Mngr {
 		
 		return mHandler;
 	}
-
-//	public void setItems(List<Status> mItems) {
-//		this.mItems = mItems;
-//	}
 
 }

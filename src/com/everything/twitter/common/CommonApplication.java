@@ -29,14 +29,13 @@ public class CommonApplication {
 		return eventManager;
 	}
 
-	public void fireEvent(Object event) {
-		final Object fired = event;
+	public void fireEvent(final Object event) {
 		new Runnable() {
 
 			@Override
 			public void run() {
 				if (eventManager != null)
-					eventManager.fire(fired);
+					eventManager.fire(event);
 
 			}
 		}.run();
