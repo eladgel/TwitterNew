@@ -21,7 +21,6 @@ import com.everything.twitter.common.CommonApplication;
 import com.everything.twitter.common.Consts;
 import com.everything.twitter.events.ResultsReceivedEvent;
 import com.everything.twitter.events.TextChangedEvent;
-import com.everything.twitter.logic.TwitterLogic.TwitterLogic;
 import com.everything.twitter.simple.Model;
 import com.everything.twitter.views.EverythingEditTextView;
 
@@ -113,7 +112,7 @@ public class MainActivity extends RoboActivity {
 
 		List<Status> items = model.getItems();
 
-		if (model.getTwitterLogic().isLoadingMore() == false) {
+		if (model.getTwitterLogic().isLoadingMorePages() == false) {
 			items.clear();
 		}
 		if (result.getItem() != null) {
