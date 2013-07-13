@@ -26,7 +26,7 @@ import com.everything.twitter.simple.Model;
 import com.everything.twitter.views.EverythingEditTextView;
 
 public class MainActivity extends RoboActivity {
-	TwitterLogic twitterLogic = null;
+
 	TwitterAdapter adapter;
 
 	@InjectView(tag = "searchBar")
@@ -35,21 +35,23 @@ public class MainActivity extends RoboActivity {
 	@InjectView(tag = "tweetList")
 	ListView listView;
 
+	final Model model = Model.getInstance();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Model mngr = Model.getInstance();
 
 		if (CommonApplication.getInstance().getEventManager() == null) {
 			CommonApplication.getInstance().setEventManager(eventManager);
 		}
 
-		et.setHandler(mngr.getHandler());
+		et.setHandler(model.getHandler());
 
-		adapter = new TwitterAdapter(getBaseContext(), mngr.getItems());
+		adapter = new TwitterAdapter(getBaseContext(), model.getItems());
 		listView.setAdapter(adapter);
 		listView.setOnScrollListener(new OnScrollListener() {
+			int lastVisiblePositionAcquired = 0;
 
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -63,10 +65,13 @@ public class MainActivity extends RoboActivity {
 					break;
 				case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
 					if (listView.getLastVisiblePosition() >= listView
-							.getCount() - 3) {
-						if (twitterLogic.getLastResult().hasNext()) {
+							.getCount() - 3
+							&& listView.getLastVisiblePosition() > lastVisiblePositionAcquired) {
+						lastVisiblePositionAcquired = listView
+								.getLastVisiblePosition();
+						if (model.getTwitterLogic().getLastResult().hasNext()) {
 							et.showProgressBar();
-							twitterLogic.getNextPage();
+							model.getTwitterLogic().getNextPage();
 						}
 					}
 				default:
@@ -89,26 +94,26 @@ public class MainActivity extends RoboActivity {
 	}
 
 	protected void onTextchanged(@Observes TextChangedEvent textChanged) {
+		Model model = Model.getInstance();
 		if (textChanged.getNewText().equals(Consts.EMPTY_STRING) == true) {
-			Model.getInstance().getItems().clear();
+			model.getItems().clear();
 			resultsUpdated();
 		} else {
-			if (twitterLogic == null) {
-				twitterLogic = new TwitterLogic();
-			}
-			twitterLogic.query(textChanged.getNewText());
+
+			model.getTwitterLogic().query(textChanged.getNewText());
 		}
 	}
 
 	protected void onResultsReceived(@Observes ResultsReceivedEvent result) {
-		if(et.getText().toString().equals(result.getItem().getQuery()) == false)
-		{
+		if (et.getText().toString().equals(result.getItem().getQuery()) == false) {
 			return;
 		}
-		
-		List<Status> items = Model.getInstance().getItems();
-		
-		if (twitterLogic.isLoadingMore() == false) {
+
+		Model model = Model.getInstance();
+
+		List<Status> items = model.getItems();
+
+		if (model.getTwitterLogic().isLoadingMore() == false) {
 			items.clear();
 		}
 		if (result.getItem() != null) {
@@ -116,16 +121,15 @@ public class MainActivity extends RoboActivity {
 			for (Status status : result.getItem().getTweets()) {
 				items.add(status);
 			}
-			twitterLogic.setLastResult(result.getItem());
+			model.getTwitterLogic().setLastResult(result.getItem());
 		}
 		resultsUpdated();
-		
+
 	}
-	
-	private void resultsUpdated()
-	{
+
+	private void resultsUpdated() {
 		runOnUiThread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				adapter.notifyDataSetChanged();

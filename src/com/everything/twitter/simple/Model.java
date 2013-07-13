@@ -3,6 +3,8 @@ package com.everything.twitter.simple;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.everything.twitter.logic.TwitterLogic.TwitterLogic;
+
 import android.os.Handler;
 import android.os.Looper;
 
@@ -16,7 +18,7 @@ public class Model {
 	public static final String TAG = "Mngr";
 
 	private Twitter twitter;
-
+	private TwitterLogic twitterLogic;
 	private static Model mInstance;
 
 	private List<Status> mItems;
@@ -74,5 +76,17 @@ public class Model {
 		
 		return mHandler;
 	}
+
+	public TwitterLogic getTwitterLogic() {
+		if (twitterLogic == null) {
+			twitterLogic = new TwitterLogic();
+		}
+		
+		return twitterLogic;
+	}
+
+//	public void setTwitterLogic(TwitterLogic twitterLogic) {
+//		this.twitterLogic = twitterLogic;
+//	}
 
 }
